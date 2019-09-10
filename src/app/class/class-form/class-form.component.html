@@ -1,0 +1,43 @@
+<nz-page-header nzBackIcon [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<form nz-form [formGroup]="classForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired nzFor="className">班级名称</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="请输入班级名称">
+      <input type="text" nz-input formControlName="className" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired nzFor="grade">年级</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="请选择年级">
+      <nz-radio-group formControlName="grade">
+        <label nz-radio [nzValue]="1">一年级</label>
+        <label nz-radio [nzValue]="2">二年级</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired nzFor="mainTeacherId">班主任</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="请选择班主任">
+      <nz-select
+        style="width: 100%"
+        nzPlaceHolder="请选择"
+        [nzDropdownStyle]="{height: 50}"
+        (nzScrollToBottom)="loadMore()"
+        formControlName="mainTeacherId"
+      >
+        <nz-option *ngFor="let teacher of teachers" [nzLabel]="teacher.name" [nzValue]="teacher.id"></nz-option>
+        <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+          <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzSpan]="8" [nzOffset]="4">
+      <button nz-button nzType="primary">提交</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

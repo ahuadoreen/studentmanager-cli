@@ -1,0 +1,57 @@
+<nz-page-header nzBackIcon [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<nz-table #ajaxTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="courseTeachers"
+          [nzLoading]="loading"
+          class="my-table">
+  <thead>
+  <tr>
+    <th nzWidth="5%">#</th>
+    <th>科目</th>
+    <th nzWidth="40%">老师</th>
+    <th nzWidth="20%">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of ajaxTable.data;let i = index">
+    <td>{{i+1}}</td>
+    <td>{{data.course.subject.name}}</td>
+    <td>
+      <ng-container *ngIf="!editCache[data.course.subject.id].edit; else teacherSelectTpl">
+        {{data.teacher?.name}}
+      </ng-container>
+      <ng-template #teacherSelectTpl>
+        <nz-select
+          style="width: 100%"
+          nzPlaceHolder="请选择"
+          [compareWith]="compareFn"
+          [nzDropdownStyle]="{height: 50}"
+          (nzScrollToBottom)="loadMore()"
+          [(ngModel)]="editCache[data.course.subject.id].data.teacher"
+        >
+          <nz-option *ngFor="let teacher of teachers" [nzLabel]="teacher.name" [nzValue]="teacher"></nz-option>
+          <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+            <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
+          </nz-option>
+        </nz-select>
+      </ng-template>
+    </td>
+    <td>
+      <div class="editable-row-operations">
+        <ng-container *ngIf="!editCache[data.course.subject.id].edit; else saveTpl">
+          <a (click)="startEdit(data.course.subject.id)">编辑</a>
+        </ng-container>
+        <ng-template #saveTpl>
+          <a nz-popconfirm nzTitle="确定要保存吗?" (nzOnConfirm)="saveEdit(data.course.subject.id)">保存</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="cancelEdit(data.course.subject.id)">取消</a>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

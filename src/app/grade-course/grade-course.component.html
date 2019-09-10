@@ -1,0 +1,66 @@
+<nz-page-header [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<nz-table #ajaxTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="gradeCourses"
+          [nzLoading]="loading"
+          class="my-table">
+  <thead>
+  <tr>
+    <th nzWidth="5%">#</th>
+    <th nzWidth="20%">年级</th>
+    <th>科目</th>
+    <th nzWidth="20%">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of ajaxTable.data;let i = index">
+    <td>{{i+1}}</td>
+    <td>
+      <div [ngSwitch]="data.grade">
+        <div    *ngSwitchCase="1">一年级</div>
+        <div    *ngSwitchCase="2">二年级</div>
+      </div>
+    </td>
+    <td>
+      <ng-container *ngIf="!editCache[data.grade].edit; else subjectSelectTpl">
+        {{data.courses?.subjectNames}}
+      </ng-container>
+      <ng-template #subjectSelectTpl>
+        <nz-select
+          style="width: 100%"
+          nzMode="multiple"
+          nzPlaceHolder="请选择"
+          [compareWith]="compareFn"
+          [nzDropdownStyle]="{height: 50}"
+          (nzScrollToBottom)="loadMore()"
+          [(ngModel)]="editCache[data.grade].data.subjects"
+        >
+          <nz-option *ngFor="let subject of subjects" [nzLabel]="subject.name" [nzValue]="subject"></nz-option>
+          <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+            <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
+          </nz-option>
+        </nz-select>
+      </ng-template>
+    </td>
+    <td>
+      <div class="editable-row-operations">
+        <ng-container *ngIf="!editCache[data.grade].edit; else saveTpl">
+          <a (click)="startEdit(data.grade)">编辑</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a nz-popconfirm nzTitle="确定要重置吗?" (nzOnConfirm)="delete(data.grade)">重置</a>
+        </ng-container>
+        <ng-template #saveTpl>
+          <a nz-popconfirm nzTitle="确定要保存吗?" (nzOnConfirm)="saveEdit(data.grade)">保存</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="cancelEdit(data.grade)">取消</a>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+

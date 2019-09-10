@@ -1,0 +1,130 @@
+<nz-page-header [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<button nz-button nzType="primary" class="add-button" routerLink="/home/addStudent">新增</button>
+<nz-table #ajaxTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="students"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          (nzPageIndexChange)="searchData()"
+          (nzPageSizeChange)="searchData(true)" class="my-table">
+  <thead>
+  <tr>
+    <th nzWidth="5%">#</th>
+    <th nzWidth="10%">学号</th>
+    <th nzCustomFilter nzWidth="30%">姓名<i
+      class="ant-table-filter-icon"
+      nz-icon
+      nz-dropdown
+      #dropdown="nzDropdown"
+      nzType="search"
+      [nzDropdownMenu]="menu"
+      [class.ant-table-filter-open]="dropdown.nzVisible"
+      nzTrigger="click"
+      nzPlacement="bottomRight"
+      [nzClickHide]="false"
+      nzTableFilter
+    ></i></th>
+    <th nzWidth="12%">性别</th>
+    <th nzWidth="10%">年龄</th>
+    <th>班级</th>
+    <th nzWidth="20%">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of ajaxTable.data;let i = index">
+    <td>{{i+1}}</td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else snoInputTpl">
+        {{ data.sno }}
+      </ng-container>
+      <ng-template #snoInputTpl>
+        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.sno" />
+      </ng-template>
+    </td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else nameInputTpl">
+        {{ data.name }}
+      </ng-container>
+      <ng-template #nameInputTpl>
+        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
+      </ng-template>
+    </td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else genderRadioTpl">
+        <div *ngIf="data.gender === 1">
+          男
+        </div>
+        <div *ngIf="data.gender === 0">
+          女
+        </div>
+      </ng-container>
+      <ng-template #genderRadioTpl>
+        <nz-radio-group [(ngModel)]="editCache[data.id].data.gender">
+          <label nz-radio [nzValue]="1">男</label>
+          <label nz-radio [nzValue]="0">女</label>
+        </nz-radio-group>
+      </ng-template>
+    </td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else ageInputTpl">
+        {{data.age}}
+      </ng-container>
+      <ng-template #ageInputTpl>
+        <nz-input-number [(ngModel)]="editCache[data.id].data.age" [nzMin]="6" [nzMax]="70" [nzStep]="1"></nz-input-number>
+      </ng-template>
+    </td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else classSelectTpl">
+        <div [ngSwitch]="data.classes.grade">
+          <div    *ngSwitchCase="1">一年级{{data.classes.className}}</div>
+          <div    *ngSwitchCase="2">二年级{{data.classes.className}}</div>
+        </div>
+      </ng-container>
+      <ng-template #classSelectTpl>
+        <nz-select
+          style="width: 100%"
+          nzPlaceHolder="请选择"
+          [compareWith]="compareFn"
+          [nzDropdownStyle]="{height: 50}"
+          (nzScrollToBottom)="loadMore()"
+          [(ngModel)]="editCache[data.id].data.classes"
+        >
+          <nz-option *ngFor="let class of classes" [nzLabel]="formatClass(class)" [nzValue]="class"></nz-option>
+          <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+            <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
+          </nz-option>
+        </nz-select>
+      </ng-template>
+    </td>
+    <td>
+      <div class="editable-row-operations">
+        <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
+          <a (click)="startEdit(data.id)">编辑</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a nz-popconfirm nzTitle="确定要删除吗?" (nzOnConfirm)="delete(data.id)">删除</a>
+        </ng-container>
+        <ng-template #saveTpl>
+          <a nz-popconfirm nzTitle="确定要保存吗?" (nzOnConfirm)="saveEdit(data.id)">保存</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="cancelEdit(data.id)">取消</a>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="search-box">
+    <input type="text" nz-input placeholder="搜索姓名" [(ngModel)]="searchValue" />
+    <button nz-button nzSize="small" nzType="primary" (click)="searchData()" class="search-button">
+      搜索
+    </button>
+    <button nz-button nzSize="small" (click)="reset()">重置</button>
+  </div>
+</nz-dropdown-menu>

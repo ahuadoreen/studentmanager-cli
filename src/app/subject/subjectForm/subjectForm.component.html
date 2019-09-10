@@ -1,0 +1,17 @@
+<nz-page-header nzBackIcon [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<form nz-form [formGroup]="subjectForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzRequired nzFor="name">科目名称</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="请输入科目名称">
+      <input type="text" nz-input formControlName="name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzSpan]="8" [nzOffset]="4">
+      <button nz-button nzType="primary">提交</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

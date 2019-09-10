@@ -1,0 +1,71 @@
+<nz-page-header [nzTitle]="title">
+  <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
+  </nz-breadcrumb>
+</nz-page-header>
+<button nz-button nzType="primary" class="add-button" routerLink="/home/addSubject">新增</button>
+<nz-table #ajaxTable
+nzShowSizeChanger
+[nzFrontPagination]="false"
+[nzData]="subjects"
+[nzLoading]="loading"
+[nzTotal]="total"
+[(nzPageIndex)]="pageIndex"
+[(nzPageSize)]="pageSize"
+(nzPageIndexChange)="searchData()"
+(nzPageSizeChange)="searchData(true)" class="my-table">
+  <thead>
+  <tr>
+    <th nzWidth="5%">#</th>
+    <th nzCustomFilter>科目名称<i
+      class="ant-table-filter-icon"
+      nz-icon
+      nz-dropdown
+      #dropdown="nzDropdown"
+      nzType="search"
+      [nzDropdownMenu]="menu"
+      [class.ant-table-filter-open]="dropdown.nzVisible"
+      nzTrigger="click"
+      nzPlacement="bottomRight"
+      [nzClickHide]="false"
+      nzTableFilter
+    ></i></th>
+    <th nzWidth="20%">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of ajaxTable.data;let i = index">
+    <td>{{i+1}}</td>
+    <td>
+      <ng-container *ngIf="!editCache[data.id].edit; else nameInputTpl">
+      {{ data.name }}
+    </ng-container>
+      <ng-template #nameInputTpl>
+        <input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" />
+      </ng-template>
+    </td>
+    <td>
+      <div class="editable-row-operations">
+        <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
+          <a (click)="startEdit(data.id)">编辑</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a nz-popconfirm nzTitle="确定要删除吗?" (nzOnConfirm)="delete(data.id)">删除</a>
+        </ng-container>
+        <ng-template #saveTpl>
+          <a nz-popconfirm nzTitle="确定要保存吗?" (nzOnConfirm)="saveEdit(data.id)">保存</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="cancelEdit(data.id)">取消</a>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="search-box">
+    <input type="text" nz-input placeholder="搜索名称" [(ngModel)]="searchValue" />
+    <button nz-button nzSize="small" nzType="primary" (click)="searchData()" class="search-button">
+      搜索
+    </button>
+    <button nz-button nzSize="small" (click)="reset()">重置</button>
+  </div>
+</nz-dropdown-menu>

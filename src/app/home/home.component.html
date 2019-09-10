@@ -1,0 +1,33 @@
+
+    <nz-layout>
+      <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+          <li nz-submenu nzTitle="师生管理中心" nzIcon="user">
+            <ul>
+              <li nz-menu-item nzMatchRouter [routerLink]="['student']">学生管理</li>
+              <li nz-menu-item nzMatchRouter [routerLink]="['class']">班级管理</li>
+              <li nz-menu-item nzMatchRouter [routerLink]="['gradeCourse']">年级课程管理</li>
+              <li nz-menu-item nzMatchRouter [routerLink]="['teacher']">教师管理</li>
+              <li nz-menu-item nzMatchRouter [routerLink]="['subject']">科目管理</li>
+            </ul>
+          </li>
+        </ul>
+      </nz-sider>
+      <nz-layout>
+        <nz-header>
+          <i
+            class="trigger"
+            nz-icon
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            (click)="isCollapsed = !isCollapsed"
+          ></i>
+        </nz-header>
+        <nz-content>
+          <div class="inner-content">
+            <router-outlet></router-outlet>
+          </div>
+        </nz-content>
+        <nz-footer>Ant Design ©2019 Implement By Angular</nz-footer>
+      </nz-layout>
+    </nz-layout>
