@@ -11,7 +11,7 @@ import {Observable, throwError} from 'rxjs';
 import {Router} from '@angular/router';
 import {of} from 'rxjs/internal/observable/of';
 import {mergeMap} from 'rxjs/internal/operators/mergeMap';
-import {catchError} from 'rxjs/operators';
+import {catchError, retry} from 'rxjs/operators';
 
 export class MyInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
@@ -21,17 +21,25 @@ export class MyInterceptor implements HttpInterceptor {
     if (!req.url.includes('login')) {
       const token = sessionStorage.getItem('token');
       const username = sessionStorage.getItem('username');
+      console.log(token + username);
       authReq = req.clone({ setHeaders: {  token, username } });
       return next.handle(authReq).pipe(
         mergeMap((event: any) => {
           // 允许统一对请求错误处理
             if (event instanceof HttpResponse) {
                   const body: any = event.body;
+                  console.log(body);
                   if (body.code !== 200) {
                       // 继续抛出错误中断后续所有 Pipe、subscribe 操作，因此：
                       // this.http.get('/').subscribe() 并不会触发
                     if (body.code === 401) {
                       this.router.navigate(['/login']);
+                    } else if (body.code === 100) {
+                      const newToken = body.token;
+                      sessionStorage.setItem('token', newToken);
+                      console.log('new token: ' + newToken);
+                      authReq = req.clone({ setHeaders: {  token: newToken, username } });
+                      return next.handle(authReq).pipe();
                     }
                     return throwError({});
                   } else {
@@ -44,10 +52,10 @@ export class MyInterceptor implements HttpInterceptor {
               return of(event);
             }
         }),
-        catchError((err: HttpErrorResponse) => this.handleData(err)),
+        catchError((err: HttpErrorResponse) => this.handleData(err))
       );
     }
-    authReq = req.clone({ setHeaders: {} });
+    authReq = req.clone();
     return next.handle(authReq);
   }
 
