@@ -2,7 +2,7 @@
   <nz-breadcrumb nz-page-header-breadcrumb [nzAutoGenerate]="true">
   </nz-breadcrumb>
 </nz-page-header>
-<button nz-button nzType="primary" class="add-button" routerLink="/home/addClass">新增</button>
+<button nz-button nzType="primary" class="add-button" routerLink="addClass">新增</button>
 <nz-table #ajaxTable
           nzShowSizeChanger
           [nzFrontPagination]="false"
@@ -82,7 +82,7 @@
     <td>
       <div class="editable-row-operations">
         <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
-          <a routerLink="/home/courseTeacher/{{data.id}}/{{data.grade}}">查看课程</a>
+          <a routerLink="courseTeacher/{{data.id}}/{{data.grade}}">查看课程</a>
           <nz-divider nzType="vertical"></nz-divider>
           <a (click)="startEdit(data.id)">编辑</a>
           <nz-divider nzType="vertical"></nz-divider>
