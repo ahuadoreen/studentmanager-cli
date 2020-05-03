@@ -5,7 +5,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ElModule } from 'element-angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SubjectComponent} from './subject/subject.component';
 import { LoginComponent } from './login/login.component';
@@ -20,6 +19,8 @@ import { ClassFormComponent } from './class/class-form/class-form.component';
 import { CourseTeacherComponent } from './class/course-teacher/course-teacher.component';
 import { StudentComponent } from './student/student.component';
 import { StudentFormComponent } from './student/student-form/student-form.component';
+import {RouteReuseStrategy} from '@angular/router';
+import {CustomRouteReuseStrategy} from './custom-route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -41,13 +42,16 @@ import { StudentFormComponent } from './student/student-form/student-form.compon
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    ElModule.forRoot(),
     FormsModule,
     HttpClientModule,
     NgZorroAntdModule,
     ReactiveFormsModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true }],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true },
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

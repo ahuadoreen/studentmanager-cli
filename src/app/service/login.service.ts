@@ -16,7 +16,7 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
   login(username: string, password: string): Observable<string> {
-    const options = { username: username, password: password };
+    const options = { username, password };
     return this.http.post<string>(this.loginUrl, qs.stringify(options), httpOptions)
       .pipe(
         catchError(this.handleError('login', username))

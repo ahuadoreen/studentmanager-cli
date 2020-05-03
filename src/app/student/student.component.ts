@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {TeacherService} from '../service/teacher.service';
-import {SubjectService} from '../service/subject.service';
 import {StudentService} from '../service/student.service';
 import {ClassService} from '../service/class.service';
 

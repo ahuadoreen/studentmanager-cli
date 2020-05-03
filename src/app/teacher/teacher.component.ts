@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {TeacherService} from '../service/teacher.service';
 import {Location} from '@angular/common';
 import {SubjectService} from '../service/subject.service';
+import {FormBuilder} from '@angular/forms';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-teacher',
@@ -23,9 +27,15 @@ export class TeacherComponent implements OnInit {
   index = 0;
   size = 10;
   compareFn = (o1: any, o2: any) => (o1 && o2 ? o1.id === o2.id : o1 === o2);
-  constructor(private teacherService: TeacherService, private subjectService: SubjectService) {}
+  constructor(private teacherService: TeacherService, private subjectService: SubjectService, private router: Router, private route: ActivatedRoute) {
+    router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(e => {
+      this.searchData();
+      console.log(route.routeConfig);
+    });
+  }
   ngOnInit(): void {
-    this.searchData();
     this.loadMore();
   }
   searchData(reset: boolean = false): void {
@@ -72,7 +82,7 @@ export class TeacherComponent implements OnInit {
     this.editCache[id].data.subjectNames = subjectName;
     this.editCache[id].data.subjectIds = subjectId;
     this.teacherService.editTeacher(id, this.editCache[id].data.name, this.editCache[id].data.gender,
-      this.editCache[id].data.age, subjectIds).subscribe(result => {
+      this.editCache[id].data.age, subjectIds, null).subscribe(result => {
       const index = this.teachers.findIndex(item => item.id === id);
       Object.assign(this.teachers[index], this.editCache[id].data);
       this.editCache[id].edit = false;

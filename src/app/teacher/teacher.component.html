@@ -94,7 +94,7 @@
     <td>
       <div class="editable-row-operations">
         <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
-          <a (click)="startEdit(data.id)">编辑</a>
+          <a routerLink="editTeacher/{{data.id}}">编辑</a>
           <nz-divider nzType="vertical"></nz-divider>
           <a nz-popconfirm nzTitle="确定要删除吗?" (nzOnConfirm)="delete(data.id)">删除</a>
         </ng-container>

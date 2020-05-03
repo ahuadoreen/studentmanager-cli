@@ -13,8 +13,8 @@
     <nz-form-label [nzSpan]="3" nzRequired nzFor="gender">性别</nz-form-label>
     <nz-form-control [nzSpan]="8" nzErrorTip="请选择性别">
       <nz-radio-group formControlName="gender">
-        <label nz-radio nzValue="1">男</label>
-        <label nz-radio nzValue="0">女</label>
+        <label nz-radio [nzValue]="1">男</label>
+        <label nz-radio [nzValue]="0">女</label>
       </nz-radio-group>
     </nz-form-control>
   </nz-form-item>
@@ -40,6 +40,22 @@
           <i nz-icon nzType="loading" class="loading-icon"></i> 加载中...
         </nz-option>
       </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="3" nzFor="file">头像</nz-form-label>
+    <nz-form-control [nzSpan]="8">
+      <nz-upload
+        nzListType="picture-card"
+        [nzShowUploadList]="false"
+        [nzBeforeUpload]="beforeUpload"
+      >
+        <ng-container *ngIf="!avatarUrl">
+          <i class="upload-icon" nz-icon [nzType]="loading ? 'loading' : 'plus'"></i>
+          <div class="ant-upload-text">Upload</div>
+        </ng-container>
+        <img *ngIf="avatarUrl" [src]="domSanitizer.bypassSecurityTrustUrl(avatarUrl)" style="width: 100%" />
+      </nz-upload>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>

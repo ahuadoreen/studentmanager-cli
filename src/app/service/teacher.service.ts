@@ -37,20 +37,50 @@ export class TeacherService {
     name: string,
     gender: number,
     age: number,
-    subjectIds: any[]
+    subjectIds: any[],
+    file: File
   ): Observable<any> {
     const options = { id, name, gender, age, subjectIds };
-    return this.http.post(`${this.teacherUrl}editTeacher`, qs.stringify(options, { indices: false }), httpOptions);
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('name', name);
+    formData.append('gender', gender.toString());
+    formData.append('subjectIds', subjectIds.toString());
+    formData.append('age', age.toString());
+    if (file != null) {
+      formData.append('file', file);
+    }
+    return this.http.post(`${this.teacherUrl}editTeacher`, formData, {});
   }
+
   addTeacher(
     name: string,
     gender: number,
     age: number,
-    subjectIds: []
+    subjectIds: [],
+    file: File
   ): Observable<any> {
-    const options = { name, gender, age, subjectIds };
-    console.log('addTeacher: ' + qs.stringify(options, { indices: false }));
-    return this.http.post(`${this.teacherUrl}addTeacher`, qs.stringify(options, { indices: false }), httpOptions);
+    // const options = { name, gender, age, subjectIds };
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('gender', gender.toString());
+    formData.append('subjectIds', subjectIds.toString());
+    formData.append('age', age.toString());
+    if (file != null) {
+      formData.append('file', file);
+    }
+    return this.http.post(`${this.teacherUrl}addTeacher`, formData, {});
   }
+
+  getTeacherDetail(
+    id: string
+  ): Observable<any> {
+    const params = new HttpParams()
+      .append('id', id);
+    return this.http.get(`${this.teacherUrl}teacherDetail`, {
+      params
+    });
+  }
+
   constructor(private http: HttpClient) {}
 }

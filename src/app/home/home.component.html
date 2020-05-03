@@ -5,16 +5,16 @@
         <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
           <li nz-submenu nzTitle="师生管理中心" nzIcon="user">
             <ul>
-              <li nz-menu-item nzMatchRouter [routerLink]="['student']">学生管理</li>
-              <li nz-menu-item nzMatchRouter [routerLink]="['class']">班级管理</li>
-              <li nz-menu-item nzMatchRouter [routerLink]="['gradeCourse']">年级课程管理</li>
-              <li nz-menu-item nzMatchRouter [routerLink]="['teacher']">教师管理</li>
-              <li nz-menu-item nzMatchRouter [routerLink]="['subject']">科目管理</li>
+              <li nz-menu-item nzMatchRouter routerLink="student">学生管理</li>
+              <li nz-menu-item nzMatchRouter routerLink="class">班级管理</li>
+              <li nz-menu-item nzMatchRouter routerLink="gradeCourse">年级课程管理</li>
+              <li nz-menu-item nzMatchRouter routerLink="teacher">教师管理</li>
+              <li nz-menu-item nzMatchRouter routerLink="subject">科目管理</li>
             </ul>
           </li>
         </ul>
       </nz-sider>
-      <nz-layout>
+      <nz-layout class="content-wrapper">
         <nz-header>
           <i
             class="trigger"
